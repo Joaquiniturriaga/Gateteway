@@ -42,29 +42,28 @@ public class ProxyController {
     // ── AUTH público ──────────────────────────────────────
 
 @PostMapping("/api/auth/register")
-public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
-    System.out.println(">>> body recibido en gateway: " + body);
-    System.out.println(">>> POST /api/auth/register → " + authUrl);
+public ResponseEntity<?> register(@RequestBody String rawBody) {
+    System.out.println(">>> raw body: " + rawBody);
     HttpHeaders h = jsonHeaders();
+    h.setContentType(MediaType.APPLICATION_JSON);
     return restTemplate.postForEntity(
         authUrl + "/api/auth/register",
-        new HttpEntity<>(body, h),
+        new HttpEntity<>(rawBody, h),
         Object.class
     );
 }
 
 
-    @PostMapping("/api/auth/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
-        System.out.println(">>> POST /api/auth/login → " + authUrl);
-        HttpHeaders h = jsonHeaders();
-        return restTemplate.postForEntity(
-            authUrl + "/api/auth/login",
-            new HttpEntity<>(body, h),
-            Object.class
-        );
-    }
-
+@PostMapping("/api/auth/login")
+public ResponseEntity<?> login(@RequestBody String rawBody) {
+    HttpHeaders h = jsonHeaders();
+    h.setContentType(MediaType.APPLICATION_JSON);
+    return restTemplate.postForEntity(
+        authUrl + "/api/auth/login",
+        new HttpEntity<>(rawBody, h),
+        Object.class
+    );
+}
     // ── USERS protegido ───────────────────────────────────
 
     @GetMapping("/api/users/profile")
