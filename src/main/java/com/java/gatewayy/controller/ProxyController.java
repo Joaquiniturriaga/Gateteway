@@ -41,16 +41,6 @@ public class ProxyController {
 
     // ── AUTH público ──────────────────────────────────────
 
-    @PostMapping("/api/auth/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
-        System.out.println(">>> POST /api/auth/register → " + authUrl);
-        HttpHeaders h = jsonHeaders();
-        return restTemplate.postForEntity(
-            authUrl + "/api/auth/register",
-            new HttpEntity<>(body, h),
-            Object.class
-        );
-    }
 @PostMapping("/api/auth/register")
 public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
     System.out.println(">>> POST /api/auth/register → " + authUrl);
@@ -61,6 +51,17 @@ public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
         Object.class
     );
 }
+
+    @PostMapping("/api/auth/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
+        System.out.println(">>> POST /api/auth/login → " + authUrl);
+        HttpHeaders h = jsonHeaders();
+        return restTemplate.postForEntity(
+            authUrl + "/api/auth/login",
+            new HttpEntity<>(body, h),
+            Object.class
+        );
+    }
 
     // ── USERS protegido ───────────────────────────────────
 
