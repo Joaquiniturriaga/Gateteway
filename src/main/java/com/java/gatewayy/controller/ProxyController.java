@@ -7,6 +7,7 @@ import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class ProxyController {
     private String reportUrl;
 
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ProxyController() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
@@ -55,14 +57,18 @@ public ResponseEntity<?> register(@RequestBody String rawBody) {
 
 
 @PostMapping("/api/auth/login")
-public ResponseEntity<?> login(@RequestBody String rawBody) {
-    HttpHeaders h = jsonHeaders();
-    h.setContentType(MediaType.APPLICATION_JSON);
-    return restTemplate.postForEntity(
-        authUrl + "/api/auth/login",
-        new HttpEntity<>(rawBody, h),
-        Object.class
-    );
+public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
+    try {
+        String json = objectMapper.writeValueAsString(body);
+        HttpHeaders h = jsonHeaders();
+        return restTemplate.postForEntity(
+            authUrl + "/api/auth/login",
+            new HttpEntity<>(json, h),
+            String.class
+        );
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+    }
 }
     // ── USERS protegido ───────────────────────────────────
 
