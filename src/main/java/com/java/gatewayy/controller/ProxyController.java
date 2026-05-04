@@ -44,15 +44,19 @@ public class ProxyController {
     // ── AUTH público ──────────────────────────────────────
 
 @PostMapping("/api/auth/register")
-public ResponseEntity<?> register(@RequestBody String rawBody) {
-    System.out.println(">>> raw body: " + rawBody);
-    HttpHeaders h = jsonHeaders();
-    h.setContentType(MediaType.APPLICATION_JSON);
-    return restTemplate.postForEntity(
-        authUrl + "/api/auth/register",
-        new HttpEntity<>(rawBody, h),
-        Object.class
-    );
+public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
+    try {
+        String json = objectMapper.writeValueAsString(body);
+        System.out.println(">>> sending json: " + json);
+        HttpHeaders h = jsonHeaders();
+        return restTemplate.postForEntity(
+            authUrl + "/api/auth/register",
+            new HttpEntity<>(json, h),
+            String.class
+        );
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+    }
 }
 
 
