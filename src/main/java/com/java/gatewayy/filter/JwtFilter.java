@@ -1,0 +1,69 @@
+package com.java.gatewayy.filter;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.List;
+
+@Component
+public class JwtFilter extends OncePerRequestFilter {
+
+    @Value("${jwt.secret}")
+    private String secret;
+
+    private static final List<String> RUTAS_PUBLICAS = List.of(
+        "/api/auth/register",
+        "/api/auth/login",
+        "/"
+    );
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest req,
+                                    HttpServletResponse res,
+                                    FilterChain chain)
+            throws ServletException, IOException {
+
+        String path = req.getRequestURI();
+
+        if (RUTAS_PUBLICAS.contains(path)) {
+            chain.doFilter(req, res);
+            return;
+        }
+
+        String authHeader = req.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            res.setStatus(401);
+            res.setContentType("application/json");
+            res.getWriter().write("{\"error\":\"Token requerido\"}");
+            return;
+        }
+
+        try {
+            Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+            Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(authHeader.substring(7))
+                .getBody();
+
+            req.setAttribute("userId", claims.get("id"));
+            req.setAttribute("userRol", claims.get("role"));
+
+        } catch (JwtException e) {
+            res.setStatus(401);
+            res.setContentType("application/json");
+            res.getWriter().write("{\"error\":\"Token invalido o expirado\"}");
+            return;
+        }
+
+        chain.doFilter(req, res);
+    }
+}
