@@ -49,27 +49,29 @@ public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
         String json = objectMapper.writeValueAsString(body);
         System.out.println(">>> sending json: " + json);
         HttpHeaders h = jsonHeaders();
-        return restTemplate.postForEntity(
+        ResponseEntity<Object> response = restTemplate.postForEntity(
             authUrl + "/api/auth/register",
             new HttpEntity<>(json, h),
-            String.class
+            Object.class
         );
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     } catch (Exception e) {
+        System.out.println(">>> ERROR: " + e.getMessage());
         return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
     }
 }
-
 
 @PostMapping("/api/auth/login")
 public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
     try {
         String json = objectMapper.writeValueAsString(body);
         HttpHeaders h = jsonHeaders();
-        return restTemplate.postForEntity(
+        ResponseEntity<Object> response = restTemplate.postForEntity(
             authUrl + "/api/auth/login",
             new HttpEntity<>(json, h),
-            String.class
+            Object.class
         );
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     } catch (Exception e) {
         return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
     }
