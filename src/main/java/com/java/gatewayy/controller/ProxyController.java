@@ -42,15 +42,16 @@ public class ProxyController {
     // ── AUTH público ──────────────────────────────────────
 
 @PostMapping("/api/auth/register")
-public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
-    System.out.println(">>> POST /api/auth/register → " + authUrl);
-    HttpHeaders h = jsonHeaders();
-    return restTemplate.postForEntity(
-        "https://httpbin.org/post",
-        new HttpEntity<>(body, h),
-        Object.class
-    );
-}
+    public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
+        System.out.println(">>> POST /api/auth/register → " + authUrl);
+        HttpHeaders h = jsonHeaders();
+        return restTemplate.postForEntity(
+            authUrl + "/api/auth/register",
+            new HttpEntity<>(body, h),
+            Object.class
+        );
+    }
+
 
     @PostMapping("/api/auth/login")
     public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
@@ -118,11 +119,13 @@ public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
 
     // ── Helpers ───────────────────────────────────────────
 
-    private HttpHeaders jsonHeaders() {
-        HttpHeaders h = new HttpHeaders();
-        h.setContentType(MediaType.APPLICATION_JSON);
-        return h;
-    }
+private HttpHeaders jsonHeaders() {
+    HttpHeaders h = new HttpHeaders();
+    h.setContentType(MediaType.APPLICATION_JSON);
+    h.set("Host", "auth-service-jcmf.onrender.com");
+    h.set("User-Agent", "Mozilla/5.0");
+    return h;
+}
 
     private HttpHeaders userHeaders(HttpServletRequest req) {
         HttpHeaders h = new HttpHeaders();
