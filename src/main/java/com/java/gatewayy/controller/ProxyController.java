@@ -124,8 +124,9 @@ private HttpHeaders jsonHeaders() {
     h.setContentType(MediaType.APPLICATION_JSON);
     h.set("Host", "auth-service-jcmf.onrender.com");
     h.set("User-Agent", "Mozilla/5.0");
+    h.set("Transfer-Encoding", "identity"); 
     return h;
-}
+    }
 
     private HttpHeaders userHeaders(HttpServletRequest req) {
         HttpHeaders h = new HttpHeaders();
