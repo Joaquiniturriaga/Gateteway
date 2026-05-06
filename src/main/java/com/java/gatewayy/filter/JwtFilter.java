@@ -47,6 +47,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         try {
+            //Prefijo  para los token :)
+            String token = authHeader.substring(7);
+            if(token.startsWith("AUTH-")){
+                token = token.substring(5);
+            }
+
             Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
             Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
