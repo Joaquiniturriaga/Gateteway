@@ -48,10 +48,9 @@ public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
     try {
         String json = objectMapper.writeValueAsString(body);
         System.out.println(">>> sending json: " + json);
-        HttpHeaders h = jsonHeaders();
         ResponseEntity<Object> response = restTemplate.postForEntity(
             authUrl + "/api/auth/register",
-            new HttpEntity<>(json, h),
+            new HttpEntity<>(json, jsonHeaders()),
             Object.class
         );
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
@@ -65,10 +64,9 @@ public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
 public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
     try {
         String json = objectMapper.writeValueAsString(body);
-        HttpHeaders h = jsonHeaders();
         ResponseEntity<Object> response = restTemplate.postForEntity(
             authUrl + "/api/auth/login",
-            new HttpEntity<>(json, h),
+            new HttpEntity<>(json, jsonHeaders()),
             Object.class
         );
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
@@ -134,16 +132,13 @@ public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
 private HttpHeaders jsonHeaders() {
     HttpHeaders h = new HttpHeaders();
     h.setContentType(MediaType.APPLICATION_JSON);
-    h.set("Host", "auth-service-jcmf.onrender.com");
-    h.set("User-Agent", "Mozilla/5.0");
-    h.set("Transfer-Encoding", "identity"); 
     return h;
     }
 
     private HttpHeaders userHeaders(HttpServletRequest req) {
         HttpHeaders h = new HttpHeaders();
         h.set("x-user-id",  String.valueOf(req.getAttribute("userId")));
-        h.set("x-user-rol", String.valueOf(req.getAttribute("userRol")));
+        h.set("x-user-role", String.valueOf(req.getAttribute("userRole")));
         return h;
     }
 }
