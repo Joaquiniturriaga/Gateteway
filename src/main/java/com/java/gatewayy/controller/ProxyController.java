@@ -28,8 +28,8 @@ public class ProxyController {
 
     public ProxyController() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(15000);
-        factory.setReadTimeout(15000);
+        factory.setConnectTimeout(30000);
+        factory.setReadTimeout(30000);
 
         RestTemplate rt = new RestTemplate(factory);
         rt.setErrorHandler(new DefaultResponseErrorHandler() {
