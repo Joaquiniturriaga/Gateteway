@@ -57,11 +57,11 @@ public class JwtFilter extends OncePerRequestFilter {
             Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(authHeader.substring(7))
+                .parseClaimsJws(token)
                 .getBody();
 
             req.setAttribute("userId", claims.get("id"));
-            req.setAttribute("userRol", claims.get("role"));
+            req.setAttribute("userRole", claims.get("role"));
 
         } catch (JwtException e) {
             res.setStatus(401);
