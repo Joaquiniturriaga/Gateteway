@@ -103,6 +103,19 @@ public ResponseEntity<?> updateUser(HttpServletRequest req,
         .contentType(MediaType.APPLICATION_JSON)
         .body(response.getBody());
 }
+@GetMapping("/api/users/users")
+public ResponseEntity<?> getAllUsers(HttpServletRequest req) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        userUrl + "/api/users/users",
+        HttpMethod.GET,
+        new HttpEntity<>(userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
 
 @PostMapping("/api/reports")
 public ResponseEntity<?> createReport(HttpServletRequest req,
