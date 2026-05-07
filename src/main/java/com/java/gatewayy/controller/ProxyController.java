@@ -74,7 +74,20 @@ public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
         return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
     }
 }
-    // ── USERS protegido ───────────────────────────────────
+
+@GetMapping("/api/users/profile")
+public ResponseEntity<?> getProfile(HttpServletRequest req) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        userUrl + "/api/users/profile",
+        HttpMethod.GET,
+        new HttpEntity<>(userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
 
 @PutMapping("/api/users/update")
 public ResponseEntity<?> updateUser(HttpServletRequest req,
@@ -119,7 +132,6 @@ public ResponseEntity<?> getReports(HttpServletRequest req) {
         .contentType(MediaType.APPLICATION_JSON)
         .body(response.getBody());
 }
-
     // ── Health ────────────────────────────────────────────
 
     @GetMapping("/")
