@@ -137,6 +137,7 @@ private HttpHeaders jsonHeaders() {
 
     private HttpHeaders userHeaders(HttpServletRequest req) {
         HttpHeaders h = new HttpHeaders();
+        h.setContentType(MediaType.APPLICATION_JSON);
         h.set("x-user-id",  String.valueOf(req.getAttribute("userId")));
         h.set("x-user-role", String.valueOf(req.getAttribute("userRole")));
         return h;
