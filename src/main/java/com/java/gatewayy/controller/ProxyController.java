@@ -76,49 +76,49 @@ public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
 }
     // ── USERS protegido ───────────────────────────────────
 
-    @GetMapping("/api/users/profile")
-    public ResponseEntity<?> getProfile(HttpServletRequest req) {
-        return restTemplate.exchange(
-            userUrl + "/api/users/profile",
-            HttpMethod.GET,
-            new HttpEntity<>(userHeaders(req)),
-            Object.class
-        );
-    }
+@PutMapping("/api/users/update")
+public ResponseEntity<?> updateUser(HttpServletRequest req,
+                                    @RequestBody Map<String, Object> body) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        userUrl + "/api/users/update",
+        HttpMethod.PUT,
+        new HttpEntity<>(body, userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
 
-    @PutMapping("/api/users/update")
-    public ResponseEntity<?> updateUser(HttpServletRequest req,
-                                        @RequestBody Map<String, Object> body) {
-        return restTemplate.exchange(
-            userUrl + "/api/users/update",
-            HttpMethod.PUT,
-            new HttpEntity<>(body, userHeaders(req)),
-            Object.class
-        );
-    }
+@PostMapping("/api/reports")
+public ResponseEntity<?> createReport(HttpServletRequest req,
+                                      @RequestBody Map<String, Object> body) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        reportUrl + "/api/reports",
+        HttpMethod.POST,
+        new HttpEntity<>(body, userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
 
-    // ── REPORTS protegido ─────────────────────────────────
-
-    @PostMapping("/api/reports")
-    public ResponseEntity<?> createReport(HttpServletRequest req,
-                                          @RequestBody Map<String, Object> body) {
-        return restTemplate.exchange(
-            reportUrl + "/api/reports",
-            HttpMethod.POST,
-            new HttpEntity<>(body, userHeaders(req)),
-            Object.class
-        );
-    }
-
-    @GetMapping("/api/reports")
-    public ResponseEntity<?> getReports(HttpServletRequest req) {
-        return restTemplate.exchange(
-            reportUrl + "/api/reports",
-            HttpMethod.GET,
-            new HttpEntity<>(userHeaders(req)),
-            Object.class
-        );
-    }
+@GetMapping("/api/reports")
+public ResponseEntity<?> getReports(HttpServletRequest req) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        reportUrl + "/api/reports",
+        HttpMethod.GET,
+        new HttpEntity<>(userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
 
     // ── Health ────────────────────────────────────────────
 
