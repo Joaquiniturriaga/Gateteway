@@ -32,6 +32,11 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String path = req.getRequestURI();
+            if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+        chain.doFilter(req, res);
+        return;
+    }
+    
 
         if (RUTAS_PUBLICAS.contains(path)) {
             chain.doFilter(req, res);
