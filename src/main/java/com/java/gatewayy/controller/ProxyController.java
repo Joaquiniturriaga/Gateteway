@@ -10,6 +10,9 @@ import org.springframework.web.client.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 public class ProxyController {
@@ -22,6 +25,9 @@ public class ProxyController {
 
     @Value("${report.service.url}")
     private String reportUrl;
+
+    @Value("${notification.service.url}")
+    private String notificationUrl;
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -145,6 +151,70 @@ public ResponseEntity<?> getReports(HttpServletRequest req) {
         .contentType(MediaType.APPLICATION_JSON)
         .body(response.getBody());
 }
+
+
+@PostMapping("/api/notifications/location")
+public ResponseEntity<?> updateLocation(HttpServletRequest req,
+                                        @RequestBody Map<String, Object> body) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        notificationUrl + "/api/notifications/location",
+        HttpMethod.POST,
+        new HttpEntity<>(body, userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
+
+@GetMapping("/api/notifications/location/my")
+public ResponseEntity<?> getMyNotifications(HttpServletRequest req) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        notificationUrl + "/api/notifications/location/my",
+        HttpMethod.GET,
+        new HttpEntity<>(userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
+
+@GetMapping("/api/notifications/admin/alerts")
+public ResponseEntity<?> getAdminAlerts(HttpServletRequest req) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        notificationUrl + "/api/notifications/admin/alerts",
+        HttpMethod.GET,
+        new HttpEntity<>(userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
+
+@PutMapping("/api/notifications/admin/alerts/{id}/review")
+public ResponseEntity<?> reviewAlert(HttpServletRequest req,
+                                     @PathVariable Long id,
+                                     @RequestBody Map<String, Object> body) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        notificationUrl + "/api/notifications/admin/alerts/" + id + "/review",
+        HttpMethod.PUT,
+        new HttpEntity<>(body, userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
+
+
+
+
     // ── Health ────────────────────────────────────────────
 
     @GetMapping("/")
