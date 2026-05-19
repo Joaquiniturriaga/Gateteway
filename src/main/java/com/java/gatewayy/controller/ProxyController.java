@@ -28,8 +28,8 @@ public class ProxyController {
 
     public ProxyController() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(15000);
-        factory.setReadTimeout(15000);
+        factory.setConnectTimeout(30000);
+        factory.setReadTimeout(30000);
 
         RestTemplate rt = new RestTemplate(factory);
         rt.setErrorHandler(new DefaultResponseErrorHandler() {
@@ -74,52 +74,77 @@ public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
         return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
     }
 }
-    // ── USERS protegido ───────────────────────────────────
 
-    @GetMapping("/api/users/profile")
-    public ResponseEntity<?> getProfile(HttpServletRequest req) {
-        return restTemplate.exchange(
-            userUrl + "/api/users/profile",
-            HttpMethod.GET,
-            new HttpEntity<>(userHeaders(req)),
-            Object.class
-        );
-    }
+@GetMapping("/api/users/profile")
+public ResponseEntity<?> getProfile(HttpServletRequest req) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        userUrl + "/api/users/profile",
+        HttpMethod.GET,
+        new HttpEntity<>(userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
 
-    @PutMapping("/api/users/update")
-    public ResponseEntity<?> updateUser(HttpServletRequest req,
-                                        @RequestBody Map<String, Object> body) {
-        return restTemplate.exchange(
-            userUrl + "/api/users/update",
-            HttpMethod.PUT,
-            new HttpEntity<>(body, userHeaders(req)),
-            Object.class
-        );
-    }
+@PutMapping("/api/users/update")
+public ResponseEntity<?> updateUser(HttpServletRequest req,
+                                    @RequestBody Map<String, Object> body) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        userUrl + "/api/users/update",
+        HttpMethod.PUT,
+        new HttpEntity<>(body, userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
+@GetMapping("/api/users/users")
+public ResponseEntity<?> getAllUsers(HttpServletRequest req) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        userUrl + "/api/users/users",
+        HttpMethod.GET,
+        new HttpEntity<>(userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
 
-    // ── REPORTS protegido ─────────────────────────────────
+@PostMapping("/api/reports")
+public ResponseEntity<?> createReport(HttpServletRequest req,
+                                      @RequestBody Map<String, Object> body) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        reportUrl + "/api/reports",
+        HttpMethod.POST,
+        new HttpEntity<>(body, userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
 
-    @PostMapping("/api/reports")
-    public ResponseEntity<?> createReport(HttpServletRequest req,
-                                          @RequestBody Map<String, Object> body) {
-        return restTemplate.exchange(
-            reportUrl + "/api/reports",
-            HttpMethod.POST,
-            new HttpEntity<>(body, userHeaders(req)),
-            Object.class
-        );
-    }
-
-    @GetMapping("/api/reports")
-    public ResponseEntity<?> getReports(HttpServletRequest req) {
-        return restTemplate.exchange(
-            reportUrl + "/api/reports",
-            HttpMethod.GET,
-            new HttpEntity<>(userHeaders(req)),
-            Object.class
-        );
-    }
-
+@GetMapping("/api/reports")
+public ResponseEntity<?> getReports(HttpServletRequest req) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        reportUrl + "/api/reports",
+        HttpMethod.GET,
+        new HttpEntity<>(userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
     // ── Health ────────────────────────────────────────────
 
     @GetMapping("/")
@@ -137,6 +162,7 @@ private HttpHeaders jsonHeaders() {
 
     private HttpHeaders userHeaders(HttpServletRequest req) {
         HttpHeaders h = new HttpHeaders();
+        h.setContentType(MediaType.APPLICATION_JSON);
         h.set("x-user-id",  String.valueOf(req.getAttribute("userId")));
         h.set("x-user-role", String.valueOf(req.getAttribute("userRole")));
         return h;
