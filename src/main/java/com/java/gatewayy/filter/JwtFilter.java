@@ -67,6 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             req.setAttribute("userId", claims.get("id"));
             req.setAttribute("userRole", claims.get("role"));
+            req.setAttribute("brigadaId", claims.get("brigade_id")); 
 
         } catch (JwtException e) {
             res.setStatus(401);
