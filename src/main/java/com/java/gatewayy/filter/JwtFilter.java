@@ -19,11 +19,19 @@ public class JwtFilter extends OncePerRequestFilter {
     @Value("${jwt.secret}")
     private String secret;
 
+    //Clave compartida que el gateway agrega a todos los request
+    //Los microservices verifican este header para asegurarse de que el requeste viene del gate
+    //Y no directamente del puerto 
+    @Value("{internal.secret}")
+    private String internalSecret;
+
     private static final List<String> RUTAS_PUBLICAS = List.of(
         "/api/auth/register",
         "/api/auth/login",
         "/"
     );
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest req,
@@ -75,6 +83,8 @@ public class JwtFilter extends OncePerRequestFilter {
             res.getWriter().write("{\"error\":\"Token invalido o expirado\"}");
             return;
         }
+
+        req.setAttribute("internalSecret", internalSecret);
 
         chain.doFilter(req, res);
     }
