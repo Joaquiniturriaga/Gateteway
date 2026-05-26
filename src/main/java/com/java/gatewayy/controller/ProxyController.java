@@ -341,6 +341,7 @@ private HttpHeaders jsonHeaders() {
         h.set("x-user-id",  String.valueOf(req.getAttribute("userId")));
         h.set("x-user-role", String.valueOf(req.getAttribute("userRole")));
         h.set("x-user-brigade", String.valueOf(req.getAttribute("brigadaId")));
+        h.set("x-internal-key", String.valueOf(req.getAttribute("internalSecret")));
         return h;
     }
 }
