@@ -22,7 +22,7 @@ public class JwtFilter extends OncePerRequestFilter {
     //Clave compartida que el gateway agrega a todos los request
     //Los microservices verifican este header para asegurarse de que el requeste viene del gate
     //Y no directamente del puerto 
-    @Value("%{internal.secret}")
+    @Value("${internal.secret}")
     private String internalSecret;
 
     private static final List<String> RUTAS_PUBLICAS = List.of(
