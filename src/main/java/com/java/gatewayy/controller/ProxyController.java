@@ -8,6 +8,10 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.apache.hc.core5.util.Timeout;
+import org.apache.hc.client5.http.config.RequestConfig;
 
 import java.util.Map;
 
@@ -33,9 +37,17 @@ public class ProxyController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ProxyController() {
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(30000);
-        factory.setReadTimeout(30000);
+        RequestConfig requestConfig = RequestConfig.custom()
+            .setConnectTimeout(Timeout.ofSeconds(30))
+            .setResponseTimeout(Timeout.ofSeconds(30))
+            .build();
+
+        var httpClient = HttpClients.custom()
+            .setDefaultRequestConfig(requestConfig)
+            .build();
+
+        HttpComponentsClientHttpRequestFactory factory = 
+            new HttpComponentsClientHttpRequestFactory(httpClient);
 
         RestTemplate rt = new RestTemplate(factory);
         rt.setErrorHandler(new DefaultResponseErrorHandler() {
