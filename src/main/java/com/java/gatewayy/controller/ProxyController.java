@@ -270,6 +270,22 @@ public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
     }
 
 
+    @PutMapping("/api/reports/{id}/status")
+public ResponseEntity<?> updateReportStatus(HttpServletRequest req,
+                                            @PathVariable Long id,
+                                            @RequestBody Map<String, Object> body) {
+    ResponseEntity<String> response = restTemplate.exchange(
+        reportUrl + "/api/reports/" + id + "/status",
+        HttpMethod.PUT,
+        new HttpEntity<>(body, userHeaders(req)),
+        String.class
+    );
+    return ResponseEntity
+        .status(response.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(response.getBody());
+}
+
     @PostMapping("/api/notifications/location")
     public ResponseEntity<?> updateLocation(HttpServletRequest req,
                                             @RequestBody Map<String, Object> body) {
