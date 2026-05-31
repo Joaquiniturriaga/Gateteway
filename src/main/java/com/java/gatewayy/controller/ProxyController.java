@@ -33,6 +33,9 @@ public class ProxyController {
     @Value("${notification.service.url}")
     private String notificationUrl;
 
+    @Value("${agent.service.url}")
+    private String agentServiceUrl;
+
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -345,7 +348,51 @@ public ResponseEntity<?> updateReportStatus(HttpServletRequest req,
             .body(response.getBody());
     }
 
+    //lo bueno de esto es que se repetie siempre sjsj
+    // ── AI AGENT ──────────────────────────────────────────
 
+    @PostMapping("/api/agent/chat")
+    public ResponseEntity<?> agentChat(HttpServletRequest req,
+                                       @RequestBody Map<String, Object> body) {
+        ResponseEntity<String> response = restTemplate.exchange(
+            agentServiceUrl + "/api/agent/chat",
+            HttpMethod.POST,
+            new HttpEntity<>(body, userHeaders(req)),
+            String.class
+        );
+        return ResponseEntity
+            .status(response.getStatusCode())
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(response.getBody());
+    }
+
+    @GetMapping("/api/agent/metrics/summary")
+    public ResponseEntity<?> agentMetrics(HttpServletRequest req) {
+        ResponseEntity<String> response = restTemplate.exchange(
+            agentServiceUrl + "/api/agent/metrics/summary",
+            HttpMethod.GET,
+            new HttpEntity<>(userHeaders(req)),
+            String.class
+        );
+        return ResponseEntity
+            .status(response.getStatusCode())
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(response.getBody());
+    }
+
+    @GetMapping("/api/agent/health")
+    public ResponseEntity<?> agentHealth() {
+        ResponseEntity<String> response = restTemplate.exchange(
+            agentServiceUrl + "/api/agent/health",
+            HttpMethod.GET,
+            new HttpEntity<>(jsonHeaders()),
+            String.class
+        );
+        return ResponseEntity
+            .status(response.getStatusCode())
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(response.getBody());
+    }
 
 
     // ── Health ────────────────────────────────────────────
