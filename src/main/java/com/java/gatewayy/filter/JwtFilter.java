@@ -28,6 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final List<String> RUTAS_PUBLICAS = List.of(
         "/api/auth/register",
         "/api/auth/login",
+        "/api/auth/forgot-password",
+        "/api/auth/reset-password",
         "/"
     );
 
