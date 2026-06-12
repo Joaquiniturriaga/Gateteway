@@ -1,5 +1,10 @@
 package com.java.gatewayy;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -9,12 +14,17 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 public class CorsConfig {
 
+    @Value("${cors.allowed-origins}")
+    private String allowedOriginsRaw;
+
+
     @Bean
     public CorsFilter corsFilter() {
+        List<String> origins = Arrays.asList(allowedOriginsRaw.split(","));
+
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:5173");
-        config.addAllowedOrigin("https://frontend-kappa-five-92.vercel.app");
-        config.addAllowedOrigin("https://frontendd-drab.vercel.app");
+
+        origins.forEach(config::addAllowedOrigin);
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
