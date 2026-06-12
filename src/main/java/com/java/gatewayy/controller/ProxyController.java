@@ -96,6 +96,36 @@ public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
     }
 }
 
+@PostMapping("/api/auth/forgot-password")
+public ResponseEntity<?> forgotPassword(@RequestBody Map<String, Object> body) {
+    try {
+        String json = objectMapper.writeValueAsString(body);
+        ResponseEntity<Object> response = restTemplate.postForEntity(
+            authUrl + "/api/auth/forgot-password",
+            new HttpEntity<>(json, jsonHeaders()),
+            Object.class
+        );
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+    }
+}
+
+@PostMapping("/api/auth/reset-password")
+public ResponseEntity<?> resetPassword(@RequestBody Map<String, Object> body) {
+    try {
+        String json = objectMapper.writeValueAsString(body);
+        ResponseEntity<Object> response = restTemplate.postForEntity(
+            authUrl + "/api/auth/reset-password",
+            new HttpEntity<>(json, jsonHeaders()),
+            Object.class
+        );
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+    }
+}
+
 
 //USERS
     @GetMapping("/api/users/profile")
