@@ -41,8 +41,8 @@ public class ProxyController {
 
     public ProxyController() {
         RequestConfig requestConfig = RequestConfig.custom()
-            .setConnectTimeout(Timeout.ofSeconds(30))
-            .setResponseTimeout(Timeout.ofSeconds(30))
+            .setConnectTimeout(Timeout.ofSeconds(60))
+            .setResponseTimeout(Timeout.ofSeconds(60))
             .build();
 
         var httpClient = HttpClients.custom()
